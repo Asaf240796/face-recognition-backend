@@ -3,10 +3,6 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
 
-const saltRounds = 10;
-const myPlaintextPassword = "s0//P4$$w0rD";
-const someOtherPlaintextPassword = "not_bacon";
-
 const app = express();
 
 const database = {
@@ -33,84 +29,86 @@ const database = {
 app.use(bodyParser.json());
 app.use(cors());
 
+//ROOT
 app.get("/", (req, res) => {
-  res.send(database.users);
+  res.json(database.users);
 });
 
+//SignIn --> POST request = success or fail
 app.post("/signin", (req, res) => {
-  bcrypt.compare(
-    "Apple",
-    "$2b$10$VM0xMaWO9TOxE57r1OtUguCoKHVJ1JjYu0MXQ9ncPBhc66Tjf2FtW",
-    function (err, result) {
-      console.log("first guess", res);
-    }
-  );
-  bcrypt.compare(
-    "apple",
-    "$2b$10$VM0xMaWO9TOxE57r1OtUguCoKHVJ1JjYu0MXQ9ncPBhc66Tjf2FtW",
-    function (err, result) {
-      console.log("second guess", res);
-    }
-  );
+  console.log("Request Body:", req.body.email);
   if (
     req.body.email === database.users[0].email &&
     req.body.password === database.users[0].password
   ) {
-    res.json("Success");
+    //remove password
+    res.json(database.users[0]);
   } else {
     res.status(400).json("error signin");
   }
+
+  // const { email, password } = req.body;
+  // const user = database.users.find((u) => u.email === email);
+  // else if (!user) {
+  //   res.status(400).json("Wrong username");
+  //   return;
+  // }
+  // const isValid = await bcrypt.compare(password, user.password);
+  // if (!isValid) {
+  //   res.status(400).json("Wrong Password");
+  //   return;
+  // }
 });
 
-app.post("/register", (req, res) => {
-  const { email, name, password } = req.body;
-  bcrypt.hash(myPlaintextPassword, saltRounds, function (err, hash) {
-    // Store hash in your password DB.
-    console.log(hash);
-  });
+//Register --> POST request = will return new creator user
+app.post("/register", async (req, res) => {
+  const { id, email, name, password } = req.body;
+  const hash = await bcrypt.hash(password, 10);
   database.users.push({
-    id: "125",
-    name: name,
+    id,
     email: email,
-    password: password,
+    name: name,
+    password: hash,
     entries: 0,
     joined: new Date(),
   });
+  console.log(database.users);
   res.json(database.users[database.users.length - 1]);
 });
 
-const findUserById = (id, callback) => {
-  let found = false;
-  database.users.forEach((user) => {
-    if (user.id === id) {
-      found = true;
-      callback(user);
-    }
+const findUserById = (id) => {
+  return new Promise((resolve, reject) => {
+    database.users.forEach((user) => {
+      if (user.id === id) {
+        resolve(user);
+      }
+    });
+    reject("No such user");
   });
-  return found;
 };
-
 app.get("/profile/:id", (req, res) => {
   const { id } = req.params;
-  const found = findUserById(id, (user) => {
-    res.json(user);
-  });
-  if (!found) {
-    res.status(400).json("No such user");
-  }
+  findUserById(id)
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((error) => {
+      res.status(400).json(error);
+    });
 });
 
 app.put("/image", (req, res) => {
   const { id } = req.body;
-  const found = findUserById(id, (user) => {
-    user.entries++;
-    res.json(user.entries);
-  });
-  if (!found) {
-    res.status(400).json("No such user");
-  }
+  findUserById(id)
+    .then((user) => {
+      user.entries++;
+      res.json(user.entries);
+    })
+    .catch((error) => {
+      res.status(400).json(error);
+    });
 });
 
-app.listen(1234, () => {
-  console.log("running in 1234");
+const server = app.listen(1234, () => {
+  console.log(`Server is running on port ${server.address().port}`);
 });

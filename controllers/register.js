@@ -1,6 +1,10 @@
 //Register --> POST request = will return new creator user
 const handleRegister = async (req, res, db, bcrypt) => {
-  const { id, email, name, password } = req.body;
+  const { email, name, password } = req.body;
+  if (!email || !name || !password) {
+    return res.status(400).json("Can not be empty");
+  }
+
   const hash = await bcrypt.hash(password, 10);
 
   db.transaction((trx) => {

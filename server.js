@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
 const knex = require("knex");
+const dotenv = require("dotenv");
 
 const register = require("./controllers/register");
 const signin = require("./controllers/signin");
@@ -25,6 +26,8 @@ db.select("*")
   .then((data) => {
     console.log(data);
   });
+
+dotenv.config();
 
 const app = express();
 
@@ -49,7 +52,11 @@ app.get("/profile/:id", (req, res) => {
 });
 
 app.put("/image", (req, res) => {
-  image.hadleImage(req, res, db);
+  image.handleImage(req, res, db);
+});
+
+app.post("/imageurl", (req, res) => {
+  image.fetchImage(req, res);
 });
 
 const server = app.listen(1234, () => {

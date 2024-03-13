@@ -1,5 +1,5 @@
 //Register --> POST request = will return new creator user
-const handleRegister = async (req, res, db, bcrypt) => {
+export const handleRegister = async (req, res, db, bcrypt) => {
   const { email, name, password } = req.body;
   if (!email || !name || !password) {
     return res.status(400).json("Can not be empty");
@@ -34,5 +34,3 @@ const handleRegister = async (req, res, db, bcrypt) => {
     res.status(400).json("Error, user already exist");
   });
 };
-
-export default registerHandler;

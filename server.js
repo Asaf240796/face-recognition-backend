@@ -5,21 +5,31 @@ import cors from "cors";
 import knex from "knex";
 import dotenv from "dotenv";
 
-import register from "./controllers/register.js";
-import signin from "./controllers/signin";
-import profile from "./controllers/profile";
-import image from "./controllers/image";
+import { handleRegister } from "./controllers/register.js";
+import { handleSignin } from "./controllers/signin.js";
+import { handleProfileGet } from "./controllers/profile.js";
+import { fetchImage, handleImage } from "./controllers/image.js";
 
 const db = knex({
   client: "pg",
   connection: {
-    host: "dpg-cnolkdol6cac7399stv0-a",
-    port: 5432,
-    user: "face_recognition_db_64qy_user",
-    password: "1234",
-    database: "face_recognition_db_64qy",
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    ssl: { rejectUnauthorized: false },
   },
 });
+
+db.raw("SELECT CURRENT_TIMESTAMP")
+  .then((result) => {
+    console.log("Database connection successful.");
+    console.log("Current timestamp:", result.rows[0].current_timestamp);
+  })
+  .catch((error) => {
+    console.error("Error connecting to the database:", error);
+  });
 
 db.select("*")
   .from("users")
@@ -39,24 +49,24 @@ app.get("/", (req, res) => {});
 
 //SignIn
 app.post("/signin", (req, res) => {
-  signin.handleSignin(req, res, db, bcrypt);
+  handleSignin(req, res, db, bcrypt);
 });
 
 //Register
 app.post("/register", (req, res) => {
-  register.handleRegister(req, res, db, bcrypt);
+  handleRegister(req, res, db, bcrypt);
 });
 
 app.get("/profile/:id", (req, res) => {
-  profile.handleProfileGet(req, res, db);
+  handleProfileGet(req, res, db);
 });
 
 app.put("/image", (req, res) => {
-  image.handleImage(req, res, db);
+  handleImage(req, res, db);
 });
 
 app.post("/imageurl", (req, res) => {
-  image.fetchImage(req, res);
+  fetchImage(req, res);
 });
 
 const server = app.listen(1234, () => {

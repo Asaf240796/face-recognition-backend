@@ -1,4 +1,4 @@
-export const hadleProfileGet = (req, res, db) => {
+export const handleProfileGet = (req, res, db) => {
   const { id } = req.params;
   db.select("*")
     .from("users")

@@ -37,7 +37,7 @@ const returnClarifiRequestOptions = (imageUrl) => {
   return requestOptions;
 };
 
-const fetchImage = (req, res) => {
+export const fetchImage = (req, res) => {
   const { input } = req.body;
   process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
   fetch(
@@ -53,7 +53,7 @@ const fetchImage = (req, res) => {
     });
 };
 
-const handleImage = (req, res, db) => {
+export const handleImage = (req, res, db) => {
   const { id } = req.body;
   db("users")
     .where("id", "=", id)
@@ -65,10 +65,4 @@ const handleImage = (req, res, db) => {
     .catch((error) => {
       res.status(400).json("Error, unable to count entries");
     });
-};
-
-module.exports = {
-  handleImage: handleImage,
-  fetchImage: fetchImage,
-  returnClarifiRequestOptions,
 };

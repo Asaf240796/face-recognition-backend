@@ -1,23 +1,23 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const bcrypt = require("bcrypt");
-const cors = require("cors");
-const knex = require("knex");
-const dotenv = require("dotenv");
+import express from "express";
+import bodyParser from "body-parser";
+import bcrypt from "bcrypt";
+import cors from "cors";
+import knex from "knex";
+import dotenv from "dotenv";
 
-const register = require("./controllers/register");
-const signin = require("./controllers/signin");
-const profile = require("./controllers/profile");
-const image = require("./controllers/image");
+import register from "./controllers/register.js";
+import signin from "./controllers/signin";
+import profile from "./controllers/profile";
+import image from "./controllers/image";
 
 const db = knex({
   client: "pg",
   connection: {
-    host: "127.0.0.1",
+    host: "dpg-cnolkdol6cac7399stv0-a",
     port: 5432,
-    user: "postgres",
+    user: "face_recognition_db_64qy_user",
     password: "1234",
-    database: "smart-brain",
+    database: "face_recognition_db_64qy",
   },
 });
 

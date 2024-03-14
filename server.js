@@ -45,7 +45,9 @@ app.use(bodyParser.json());
 app.use(cors());
 
 //ROOT
-app.get("/", (req, res) => {});
+app.get("/", (req, res) => {
+  console.log("Root is working");
+});
 
 //SignIn
 app.post("/signin", (req, res) => {

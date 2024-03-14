@@ -10,6 +10,8 @@ import { handleSignin } from "./controllers/signin.js";
 import { handleProfileGet } from "./controllers/profile.js";
 import { fetchImage, handleImage } from "./controllers/image.js";
 
+const port = process.env.PORT || 4000;
+
 const db = knex({
   client: "pg",
   connection: {
@@ -47,7 +49,7 @@ app.use(cors());
 
 //ROOT
 app.get("/", (req, res) => {
-  console.log("Root is working");
+  res.send("Hello World!");
 });
 
 //SignIn
@@ -72,6 +74,6 @@ app.post("/imageurl", (req, res) => {
   fetchImage(req, res);
 });
 
-const server = app.listen(3002, () => {
+const server = app.listen(port, () => {
   console.log(`Server is running on port ${server.address().port}`);
 });

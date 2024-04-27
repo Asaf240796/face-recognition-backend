@@ -34,11 +34,7 @@ db.raw("SELECT CURRENT_TIMESTAMP")
     console.error("Error connecting to the database:", error);
   });
 
-db.select("*")
-  .from("users")
-  .then((data) => {
-    console.log(data);
-  });
+db.select("*").from("users");
 
 dotenv.config();
 
@@ -49,7 +45,7 @@ app.use(cors());
 
 //ROOT
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Server is running!!!");
 });
 
 //SignIn

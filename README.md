@@ -1,2 +1,1 @@
 # face-recognition-backend
-# FaceRecoBackendDockerRized
